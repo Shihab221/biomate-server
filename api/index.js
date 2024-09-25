@@ -2,7 +2,9 @@
 import mongoose from "mongoose";
 import config from "../src/config/config";
 import app from "../src/app";
+import cors from "cors";
 
+app.use(cors())
 app.listen(config.port, (err) => {
   if (err) console.log(err);
   console.log(`Server started at port ${config.port}`);
