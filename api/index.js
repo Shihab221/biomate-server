@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import mongoose from "mongoose";
-import config from "./config/config";
-import app from "./app";
+import config from "../src/config/config";
+import app from "../src/app";
 
 app.listen(config.port, (err) => {
   if (err) console.log(err);
