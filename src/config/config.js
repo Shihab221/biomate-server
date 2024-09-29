@@ -33,7 +33,7 @@ dotenv.config()
 
 const config = {
   port: 5000,
-  secret: process.env.JWT_SECRET || "ay+5M9*85&B8W*zp",
+  secret: "ay+5M9*85&B8W*zp",
   mongoUri:
     `mongodb+srv://Shihab22:%40Greenlif22@cluster0.2uxncrv.mongodb.net/todos`,
 };
