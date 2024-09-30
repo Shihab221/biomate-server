@@ -2,15 +2,25 @@ import passport from "passport";
 import passportJwt from "passport-jwt";
 import config from "../config/config";
 
+// const cookieExtractor = (req) => {
+//   let jwt;
+
+//   if (req && req.cookies) {
+//     jwt = req.cookies;
+//   }
+
+//   return jwt.userJwtToken;
+// };
+
+//gpt code
 const cookieExtractor = (req) => {
-  let jwt;
-
-  if (req && req.cookies) {
-    jwt = req.cookies;
+  let jwt = null;
+  if (req && req.cookies && req.cookies.userJwtToken) {
+    jwt = req.cookies.userJwtToken;
   }
-
-  return jwt.userJwtToken;
+  return jwt;
 };
+
 const JWTStrategy = passportJwt.Strategy;
 
 passport.use(
