@@ -40,7 +40,7 @@ const signin = async (req, res) => {
       config.secret
     );
     res.cookie("userJwtToken", token, {
-      expire: new Date() + 999,
+      expire: new Date() + 9999999,
       httpOnly: true,
     });
 
