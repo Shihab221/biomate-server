@@ -5,14 +5,14 @@ import app from "../src/app";
 import cors from "cors";
 
 
-const corsOptions = {
-  origin: 'http://www.biomatebd.com', // Allow only specific origin
-  methods: 'GET,POST', // Specify allowed methods
-  allowedHeaders: ['Content-Type', 'Authorization'], // Specify allowed headers
-  credentials: true, // Allow credentials (cookies, etc.)
-};
+// const corsOptions = {
+//   origin: 'http://www.biomatebd.com', // Allow only specific origin
+//   methods: 'GET,POST', // Specify allowed methods
+//   allowedHeaders: ['Content-Type', 'Authorization'], // Specify allowed headers
+//   credentials: true, // Allow credentials (cookies, etc.)
+// };
 
-app.use(cors(corsOptions));
+app.use(cors());
 
 app.listen(config.port, (err) => {
   if (err) console.log(err);
