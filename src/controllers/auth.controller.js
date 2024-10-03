@@ -5,62 +5,44 @@ import User from "../models/user.model";
 import config from "../config/config";
 import Course from "../models/courses.model";
 
-// Asynchronous signin with better error handling
 const signin = async (req, res) => {
-  try {
-    // Fetching all courses (only needed if the user is not a student)
-    const courseNum = await Course.find({}).exec();
+  const courseNum = await Course.find({}).exec();
 
-    const user = await User.findOne({ email: req.body.email }).exec();
-    if (!user) {
-      return res.send({ error: "User not found" });
+  User.findOne({ email: req.body.email }, (err, user) => {
+    if (user && user.active === "inactive") {
+      return res.send({ error: "You account has not been activated yet." });
     }
-
-    if (user.active === "inactive") {
-      return res.send({ error: "Your account has not been activated yet." });
-    }
-    if (user.active === "closed") {
+    if (user && user.active === "closed") {
       return res.send({
         error: "You have deleted your account. Please sign up again.",
       });
     }
-    if (user.active === "deactivated") {
+    if (user && user.active === "deactivated") {
       return res.send({
-        error: "Your account has been deactivated. Contact admin to reactivate your account.",
+        error:
+          "Your account has been deactivated. Contact admin to reactivate your account",
       });
     }
-
-    // Check if the password is valid
+    if (err || !user) {
+      return res.send({ error: "User not found" });
+    }
     if (!user.authenticate(req.body.password)) {
       return res.send({ error: "Email and password do not match" });
     }
 
-    // Sign JWT token with a limited expiration time (e.g., 1 day)
-    const oneDay = 24 * 60 * 60 * 1000;
-    // const token = jwt.sign(
-    //   {
-    //     _id: user._id,
-    //     role: user.role,
-    //   },
-    //   config.secret,
-    //   { expiresIn: "1d" } // Token expires in 1 day
-    // );
+    const token = jwt.sign(
+      {
+        _id: user._id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+      },
+      config.secret
+    );
     res.cookie("userJwtToken", token, {
-      expire: new Date(Date.now() + oneDay), // Expire in 1 day
+      expire: new Date() + 999,
       httpOnly: true,
-      // Uncomment these lines when running in production with HTTPS
-      // secure: true, // for HTTPS
-      // sameSite: "Strict", // Prevent CSRF attacks
     });
-
-    // Securely set the JWT token as a cookie
-    // res.cookie("userJwtToken", token, {
-    //   expire: new Date() + 999,
-    //   httpOnly: true,
-    //   // Uncomment these lines when running in production with HTTPS
-    //   // secure: true, // for HTTPS
-    //   // sameSite: "Strict", // Prevent CSRF attacks
-    // });
 
     return res.send({
       token,
@@ -76,10 +58,7 @@ const signin = async (req, res) => {
       },
       courseNum: user.role !== "student" ? courseNum.length : null,
     });
-  } catch (error) {
-    console.error("Error in signin:", error);
-    return res.status(500).send({ error: "Internal server error" });
-  }
+  });
 };
 
 const signout = (req, res) => {
@@ -87,17 +66,15 @@ const signout = (req, res) => {
   res.send({ message: "User signed out" });
 };
 
-// Middleware to require authentication
 const requireSignin = expressJwt({
   secret: config.secret,
   algorithms: ["HS256"],
   userProperty: "auth",
 });
 
-// Middleware to check if the user is authorized
 const hasAuthorization = (req, res, next) => {
   const authorized = req.profile && req.auth && req.profile._id == req.auth._id;
-  if (!authorized) return res.status(403).json({ error: "User is not authorized!" });
+  if (!authorized) return res.status(403).json("User is not authorized!");
   next();
 };
 
