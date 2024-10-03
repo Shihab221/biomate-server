@@ -6,12 +6,22 @@ require("../middleware/passport");
 
 const router = express.Router();
 
+// router.get(
+//   "/protected",
+//   passport.authenticate("jwt", { session: false }),
+//   (req, res) => {
+//     if (req.cookies.userJwtToken) {
+//       res.send(JSON.stringify({ message: req.cookies.userJwtToken }));
+//     }
+//   }
+// );
+
 router.get(
   "/protected",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    if (req.cookies.userJwtToken) {
-      res.send(JSON.stringify({ message: req.cookies.userJwtToken }));
+    if (tokenExtractor(req)) {
+      res.send(JSON.stringify({ message: tokenExtractor(req) }));
     }
   }
 );

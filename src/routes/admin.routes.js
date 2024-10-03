@@ -1,6 +1,7 @@
 import express from "express";
 import passport from "passport";
 import adminCtrl from "../controllers/admin.controller";
+import { tokenExtractor } from "../middleware/passport";
 
 require("../middleware/passport");
 
@@ -10,8 +11,8 @@ router.get(
   "/protected",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    if (req.cookies.userJwtToken) {
-      res.send(JSON.stringify({ message: req.cookies.userJwtToken }));
+    if (tokenExtractor(req)) {
+      res.send(JSON.stringify({ message: tokenExtractor(req) }));
     }
   }
 );

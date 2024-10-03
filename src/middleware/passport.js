@@ -12,7 +12,7 @@ import config from "../config/config";
 //   return jwt.userJwtToken;
 // };
 
-const tokenExtractor = (req) => {
+export const tokenExtractor = (req) => {
   let token = null;
 
   // Check if the Authorization header exists
