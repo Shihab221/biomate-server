@@ -36,14 +36,22 @@ const signin = async (req, res) => {
     }
 
     // Sign JWT token with a limited expiration time (e.g., 1 day)
-    const token = jwt.sign(
-      {
-        _id: user._id,
-        role: user.role,
-      },
-      config.secret,
-      { expiresIn: "1d" } // Token expires in 1 day
-    );
+    const oneDay = 24 * 60 * 60 * 1000;
+    // const token = jwt.sign(
+    //   {
+    //     _id: user._id,
+    //     role: user.role,
+    //   },
+    //   config.secret,
+    //   { expiresIn: "1d" } // Token expires in 1 day
+    // );
+    res.cookie("userJwtToken", token, {
+      expire: new Date(Date.now() + oneDay), // Expire in 1 day
+      httpOnly: true,
+      // Uncomment these lines when running in production with HTTPS
+      // secure: true, // for HTTPS
+      // sameSite: "Strict", // Prevent CSRF attacks
+    });
 
     // Securely set the JWT token as a cookie
     res.cookie("userJwtToken", token, {
