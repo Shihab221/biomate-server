@@ -45,22 +45,22 @@ const signin = async (req, res) => {
     //   config.secret,
     //   { expiresIn: "1d" } // Token expires in 1 day
     // );
-    // res.cookie("userJwtToken", token, {
-    //   expire: new Date(Date.now() + oneDay), // Expire in 1 day
-    //   httpOnly: true,
-    //   // Uncomment these lines when running in production with HTTPS
-    //   // secure: true, // for HTTPS
-    //   // sameSite: "Strict", // Prevent CSRF attacks
-    // });
-
-    // Securely set the JWT token as a cookie
     res.cookie("userJwtToken", token, {
-      expire: new Date() + 999,
+      expire: new Date(Date.now() + oneDay), // Expire in 1 day
       httpOnly: true,
       // Uncomment these lines when running in production with HTTPS
       // secure: true, // for HTTPS
       // sameSite: "Strict", // Prevent CSRF attacks
     });
+
+    // Securely set the JWT token as a cookie
+    // res.cookie("userJwtToken", token, {
+    //   expire: new Date() + 999,
+    //   httpOnly: true,
+    //   // Uncomment these lines when running in production with HTTPS
+    //   // secure: true, // for HTTPS
+    //   // sameSite: "Strict", // Prevent CSRF attacks
+    // });
 
     return res.send({
       token,
